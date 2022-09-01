@@ -19,7 +19,7 @@ namespace zapas.Tests.Repositories
             _mapper = MapperTestConfiguration.CreateMapper();
         }
 
-        /*[Fact]
+        [Fact]
         public async void Should_Return_Race_By_Date()
         {
             var _context = ApplicationTestDbContext.GetTestContext();
@@ -30,9 +30,9 @@ namespace zapas.Tests.Repositories
             var raceStart = DateTime.Parse(userRace!.RaceStart!);
             raceStart.Year.Should().Be(options.Year);
             raceStart.Month.Should().Be(options.Month);
-        }*/
+        }
 
-        /*[Fact]
+        [Fact]
         public async void Should_Return_Race_By_Place()
         {
             var _context = ApplicationTestDbContext.GetTestContext();
@@ -41,9 +41,9 @@ namespace zapas.Tests.Repositories
             var userRaces = await raceRepository.GetRaces(options);
             var userRace = userRaces.RaceData.First();
             userRace!.PlaceId.Should().Be(options.PlaceId);
-        }*/
+        }
 
-        /*[Fact]
+        [Fact]
         public async void Should_Return_Race_By_Zapa()
         {
             var _context = ApplicationTestDbContext.GetTestContext();
@@ -52,9 +52,9 @@ namespace zapas.Tests.Repositories
             var userRaces = await raceRepository.GetRaces(options);
             var userRace = userRaces.RaceData.First();
             userRace!.ZapaId.Should().Be(options.ZapaId!.Value);
-        }*/
+        }
 
-        /*[Fact]
+        [Fact]
         public async void Should_Return_Race_By_RaceType()
         {
             var _context = ApplicationTestDbContext.GetTestContext();
@@ -63,7 +63,7 @@ namespace zapas.Tests.Repositories
             var userRaces = await raceRepository.GetRaces(options);
             var userRace = userRaces.RaceData.First();
             userRace!.RaceTypeId.Should().Be(options.RaceTypeId!.Value);
-        }*/
+        }
     }
 }
 

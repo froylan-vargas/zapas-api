@@ -17,13 +17,13 @@ namespace zapas.Tests.Services
             _cache.Setup(c => c.Get(It.IsAny<string>())).Returns<RaceType>(null);
         }
 
-        /*[Fact]
+        [Fact]
         public async void Should_Return_RaceTypes()
         {
             var _context = ApplicationTestDbContext.GetTestContext();
             var raceTypeService = new RaceTypeService(_context, _cache.Object);
             var result = await raceTypeService.Get();
             result.Should().NotBeNull();
-        }*/
+        }
     }
 }

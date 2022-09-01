@@ -16,13 +16,13 @@ namespace zapas.Tests.Services
             _cache.Setup(c => c.Get(It.IsAny<string>())).Returns<Place>(null);
         }
 
-        /*[Fact]
+        [Fact]
         public async void Should_Return_User_Zapas()
         {
             var _context = ApplicationTestDbContext.GetTestContext();
             var placeService = new PlaceService(_context, _cache.Object);
             var result = await placeService.Get();
             result.Count().Should().Be(1);
-        }*/
+        }
     }
 }

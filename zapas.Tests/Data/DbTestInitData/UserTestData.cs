@@ -4,7 +4,7 @@ namespace zapas.Tests.Data.DbTestInitData
 {
     public static class UserTestData
     {
-        public static readonly Guid User1Id = new("214cb5a2-74a9-44ae-9501-3d01c4134748");
+        public static readonly string User1Id = "214cb5a2-74a9-44ae-9501-3d01c4134748";
 
         /*public static List<User> UserData
         {

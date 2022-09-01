@@ -12,6 +12,11 @@ namespace Zapas.Helpers
 		public static int RaceTimeToSeconds(string duration)
 		{
 			TimeSpan ts;
+            char sep = ':';
+
+            int freq = duration.Where(x => (x == sep)).Count();
+            if (freq<2)
+				duration = "00:" + duration;
 			TimeSpan.TryParse(duration, out ts);
 			if (ts != TimeSpan.Zero)
 			{
