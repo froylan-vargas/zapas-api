@@ -24,7 +24,7 @@ namespace zapas.Tests.Controllers
         private readonly Fixture _fixture;
         private readonly RaceController _sut;
 
-        private readonly Guid userId = UserTestData.User1Id;
+        private readonly string userId = UserTestData.User1Id;
 
         public RaceControllerTest() 
         {
@@ -56,7 +56,7 @@ namespace zapas.Tests.Controllers
         [Fact]
         public async void Should_Return_RaceOptions()
         {
-            Guid userId = UserTestData.User1Id;
+            string userId = UserTestData.User1Id;
             var result = await _sut.GetRaceOptions(userId);
             var actual = result.Result != null ? 
                 ((OkObjectResult)result.Result).Value as RaceOptions : 
@@ -70,7 +70,7 @@ namespace zapas.Tests.Controllers
         [Fact]
         public async void Should_Save_Race()
         {
-            Guid user1Id = UserTestData.User1Id;
+            string user1Id = UserTestData.User1Id;
             var newRace = _fixture.Create<RaceDTO>();
             newRace.RaceStart = DateTime.Now.ToShortDateString();
             newRace.UserId = user1Id;

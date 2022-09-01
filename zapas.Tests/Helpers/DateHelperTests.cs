@@ -12,6 +12,10 @@ namespace zapas.Tests.Helpers
             seconds.Should().Be(60);
             seconds = DateHelper.RaceTimeToSeconds("01:00:00");
             seconds.Should().Be(3600);
+            seconds = DateHelper.RaceTimeToSeconds("01:00");
+            seconds.Should().Be(60);
+            seconds = DateHelper.RaceTimeToSeconds("1:1");
+            seconds.Should().Be(61);
         }
 
         [Fact]

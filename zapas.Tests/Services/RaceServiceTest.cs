@@ -21,7 +21,7 @@ namespace zapas.Tests.Services
             _raceRepo = new Mock<IRaceRepository>();
         }
 
-        /*[Fact]
+        [Fact]
         public void Should_Return_Races()
         {
             var _context = ApplicationTestDbContext.GetTestContext();
@@ -29,9 +29,9 @@ namespace zapas.Tests.Services
             var options = GetRaceOptionsData.FilterDate();
             var result = raceService.QueryRaces(options);
             result.Should().NotBeNull();
-        }*/
+        }
 
-        /*[Fact]
+        [Fact]
         public async void Should_Create_Race()
         {
             var _context = ApplicationTestDbContext.GetTestContext();
@@ -41,6 +41,6 @@ namespace zapas.Tests.Services
             await raceService.UpdateRace(newRace);
             var afterSaveCount = _context.Races.Count();
             beforeSaveCount.Should().BeLessThan(afterSaveCount);
-        }*/
+        }
     }
 }
