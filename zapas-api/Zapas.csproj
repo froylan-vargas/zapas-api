@@ -26,6 +26,7 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.8" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.20" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,6 +49,8 @@
     <None Remove="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <None Remove="Data\DTO\Login\" />
     <None Remove="Services\Login\" />
+    <None Remove="System.Linq.Dynamic.Core" />
+    <None Remove="Data\QueryOptions\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\Models\" />
@@ -55,5 +58,6 @@
     <Folder Include="Helpers\" />
     <Folder Include="Data\DTO\Login\" />
     <Folder Include="Services\Login\" />
+    <Folder Include="Data\QueryOptions\" />
   </ItemGroup>
 </Project>

@@ -7,6 +7,7 @@ using Zapas.Data.DTO.Race;
 using Zapas.Data.DTO.Race.RaceOptions;
 using Zapas.Data.Models;
 using Zapas.Data.QueryFilters;
+using Zapas.Data.QueryOptions;
 using Zapas.Services.PlaceService;
 using Zapas.Services.RaceService;
 using Zapas.Services.RaceTypeService;
@@ -14,7 +15,7 @@ using Zapas.Services.ZapaService;
 
 namespace Zapas.Controllers
 {
-    [Route("api/race")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     //[Authorize]
     public class RaceController : ControllerBase
@@ -38,18 +39,19 @@ namespace Zapas.Controllers
             _mapper = mapper;
         }
 
-        // POST: api/races
-        [HttpPost]
-        [Route("get")]
-        public async Task<ActionResult<RaceResult>> GetRaces(GetRaceOptions options)
+        // GET: api/races
+        [HttpGet]
+        public async Task<ActionResult<RaceApiResult>> GetRaces(
+            [FromQuery] RaceQueryOptions options
+            )
         {
-            RaceResult races = await _raceService.QueryRaces(options);
+            RaceApiResult races = await _raceService.QueryRaces(options);
             return Ok(races);
         }
 
         // Get: api/race/raceOptions/{userId}
         [HttpGet]
-        [Route("raceOptions/{userId}")]
+        [Route("{userId}")]
         public async Task<ActionResult<RaceOptions>> GetRaceOptions(string userId)
         {
             var zapas = await _zapaService.GetByUserId(userId);

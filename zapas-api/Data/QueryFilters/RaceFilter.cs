@@ -2,14 +2,17 @@
 using System.Linq.Expressions;
 using Zapas.Data.DTO.Race.RaceOptions;
 using Zapas.Data.Models;
+using Zapas.Data.QueryOptions;
 
 namespace Zapas.Data.QueryFilters
 {
-    public class Filter
+    public class RaceFilter
     {
-        public static IEnumerable<Expression<Func<Race, bool>>> CreateFilter(GetRaceOptions options)
+        public static IEnumerable<Expression<Func<Race, bool>>>
+            CreateGetRaceFilter(RaceQueryOptions options)
         {
-            List<Expression<Func<Race, bool>>> predicates = new List<Expression<Func<Race, bool>>>();
+            List<Expression<Func<Race, bool>>> predicates =
+                new List<Expression<Func<Race, bool>>>();
             predicates.Add(CreateUserFilter(options));
             if(options.Year > 2020) predicates.Add(CreateDateFilter(options));
             if (options.PlaceId != null) predicates.Add(CreatePlaceFilter(options));
@@ -18,33 +21,33 @@ namespace Zapas.Data.QueryFilters
             return predicates;
         }
 
-        private static Expression<Func<Race,bool>> CreateUserFilter(GetRaceOptions options)
+        private static Expression<Func<Race,bool>> CreateUserFilter(RaceQueryOptions options)
         {
             return r => r.UserId == options.UserId;
         }
 
-        private static Expression<Func<Race, bool>> CreateDateFilter(GetRaceOptions options)
+        private static Expression<Func<Race, bool>> CreateDateFilter(RaceQueryOptions options)
         {
             return r =>
                 r.RaceStart.Year == options.Year
                     && r.RaceStart.Month == options.Month;
         }
 
-        private static Expression<Func<Race, bool>> CreateZapaFilter(GetRaceOptions options)
+        private static Expression<Func<Race, bool>> CreateZapaFilter(RaceQueryOptions options)
         {
             return r =>
                 r.ZapaId == options.ZapaId;
         }
 
-        private static Expression<Func<Race, bool>> CreatePlaceFilter(GetRaceOptions options)
+        private static Expression<Func<Race, bool>> CreatePlaceFilter(RaceQueryOptions options)
         {
             return r =>
                 r.PlaceId == options.PlaceId;
         }
-        private static Expression<Func<Race, bool>> CreateRaceTypeFilter(GetRaceOptions options)
+        private static Expression<Func<Race, bool>> CreateRaceTypeFilter(RaceQueryOptions options)
         {
             return r =>
-                r.RaceTypeId == options.RaceTypeId;
+                r.RaceTypeId == options.RaceTypeId!;
         }
     }
 }

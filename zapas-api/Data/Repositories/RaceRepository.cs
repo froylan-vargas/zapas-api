@@ -9,6 +9,7 @@ using Zapas.Data.DTO.Race;
 using Zapas.Data.DTO.Race.RaceOptions;
 using Zapas.Data.Models;
 using Zapas.Data.QueryFilters;
+using Zapas.Data.QueryOptions;
 using Zapas.Helpers;
 
 namespace Zapas.Data.Repositories
@@ -25,10 +26,10 @@ namespace Zapas.Data.Repositories
             _mapper = mapper;
         }
 
-        public async Task<RaceResult> GetRaces(GetRaceOptions options)
+        public async Task<RaceApiResult> GetRaces(RaceQueryOptions options)
         {
             IQueryable<Race> query = _context.Set<Race>();
-            var filters = Filter.CreateFilter(options);
+            var filters = RaceFilter.CreateGetRaceFilter(options);
             var pageIndex = options.PageIndex;
             var pageSize = options.PageSize;
 
@@ -42,7 +43,7 @@ namespace Zapas.Data.Repositories
 
             var count = await query.CountAsync();
 
-            RaceResult? raceResult;
+            RaceApiResult? raceResult;
 
             if(count > 0)
             {
@@ -59,8 +60,8 @@ namespace Zapas.Data.Repositories
                 var totalPaceAvg = DateHelper.RaceTimeToString(totalRacesPaceAvg);
 
                 query = query.OrderByDescending(r => r.RaceStart)
-                    .Skip(pageIndex * pageSize)
-                    .Take(pageSize);
+                    .Skip(pageIndex!.Value * pageSize!.Value)
+                    .Take(pageSize!.Value);
 
                 var queryResult = await query.ToListAsync();
 
@@ -69,16 +70,16 @@ namespace Zapas.Data.Repositories
                     .CreateMapping(_mapper, queryResult) :
                     null;
 
-                raceResult = new RaceResult(races!,
+                raceResult = new RaceApiResult(races!,
                     count,
-                    pageIndex,
-                    pageSize,
+                    pageIndex!.Value,
+                    pageSize!.Value,
                     totalDistance,
                     totalPaceAvg);
             }
             else
             {
-                raceResult = new RaceResult(new List<RaceDTO>(), 0, 0, 0, 0, "");
+                raceResult = new RaceApiResult(new List<RaceDTO>(), 0, 0, 0, 0, "");
             }
             return raceResult;
         }

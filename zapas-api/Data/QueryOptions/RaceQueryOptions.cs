@@ -1,14 +1,16 @@
-﻿namespace Zapas.Data.DTO.Race.RaceOptions
+﻿using System;
+using Zapas.Data.Repositories;
+
+namespace Zapas.Data.QueryOptions
 {
-    public class GetRaceOptions
-    {
+	public class RaceQueryOptions : BaseQueryOptions
+	{
         public string? UserId { get; set; }
         public Guid? ZapaId { get; set; }
         public Guid? RaceTypeId { get; set; }
         public Guid? PlaceId { get; set; }
         public int? Month { get; set; }
         public int? Year { get; set; }
-        public int PageIndex { get; set; }
-        public int PageSize { get; set; }
     }
 }
+
