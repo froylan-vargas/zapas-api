@@ -1,37 +1,46 @@
 ﻿using Zapas.Data.Models;
 using Zapas.Data.Cache;
+using Zapas.Data.DTO.Race.RaceOptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Zapas.Services.ZapaService
 {
     public class ZapaService : IZapaService
     {
-        private readonly BaseRepository<Zapa> _repository;
-        private readonly IApplicationCache<IEnumerable<Zapa>> _cache;
-        public ZapaService(ApplicationDbContext context, IApplicationCache<IEnumerable<Zapa>> cache)
+        private readonly ApplicationDbContext _context;
+        private readonly IApplicationCache<IEnumerable<ZapaSelection>> _cache;
+        public ZapaService(ApplicationDbContext context,
+            IApplicationCache<IEnumerable<ZapaSelection>> cache)
         {
-            _repository = new BaseRepository<Zapa>(context);
+            _context = context;
             _cache = cache;
         }
 
-        public Task<IEnumerable<Zapa>> GetByUserId(string userId)
+        public async Task<IEnumerable<ZapaSelection>>
+            GetSelection(string userId)
         {
-            throw new NotImplementedException();
+            IEnumerable<ZapaSelection> cachedZapas =
+                _cache.Get(GetCacheKey(userId.ToString()));
+            if (cachedZapas != null)
+            {
+                return cachedZapas;
+            }
+            else
+            {
+                var zapas = await _context.Zapas.AsNoTracking()
+                    .Select(z=> new ZapaSelection()
+                    {
+                        Id = z.Id,
+                        Name = z.Name
+                    }).ToListAsync();
+
+                _cache.Set(zapas, GetCacheKey(userId.ToString()));
+
+                return zapas;
+            }
         }
 
-        /*public async Task<IEnumerable<Zapa>> GetByUserId(string userId)
-{
-   IEnumerable<Zapa> cachedZapas = _cache.Get(GetCacheKey(userId.ToString()));
-   if (cachedZapas != null)
-   {
-       return cachedZapas;
-   }
-   else
-   {
-       var zapas = await _zapaRepo.Get(z => z.UserId == userId);
-       _cache.Set(zapas, GetCacheKey(userId.ToString()));
-       return zapas;
-   } 
-}*/
+
 
         private string GetCacheKey(string userId)
         {

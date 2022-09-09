@@ -54,10 +54,15 @@ namespace Zapas.Controllers
         [Route("{userId}")]
         public async Task<ActionResult<RaceOptions>> GetRaceOptions(string userId)
         {
-            var zapas = await _zapaService.GetByUserId(userId);
-            var raceTypes = await _raceTypeService.Get();
-            var places = await _placeService.Get();
-            var result = DoOptionsMapping(zapas, raceTypes, places);
+            var zapas = await _zapaService.GetSelection(userId);
+            var raceTypes = await _raceTypeService.GetSelection();
+            var places = await _placeService.GetSelection();
+            RaceOptions result = new()
+            {
+                ZapaSelection = zapas,
+                RaceTypeSelection = raceTypes,
+                PlaceSelection = places
+            };
             return Ok(result);
         }
 
@@ -67,19 +72,6 @@ namespace Zapas.Controllers
             var race = DirectMapping<Race, RaceDTO>.CreateMapping(_mapper, raceDTO); 
             await _raceService.UpdateRace(race);
             return Ok();
-        }
-
-        private RaceOptions DoOptionsMapping(
-            IEnumerable<Zapa> zapas,
-            IEnumerable<RaceType> raceTypes,
-            IEnumerable<Place> places)
-        {
-            return new()
-            {
-                ZapaSelection = DirectMapping<IEnumerable<ZapaSelection>, IEnumerable<Zapa>>.CreateMapping(_mapper, zapas),
-                RaceTypeSelection = DirectMapping<IEnumerable<RaceTypeSelection>, IEnumerable<RaceType>>.CreateMapping(_mapper, raceTypes),
-                PlaceSelection = DirectMapping<IEnumerable<PlaceSelection>, IEnumerable<Place>>.CreateMapping(_mapper, places),
-            };
         }
     }
 }

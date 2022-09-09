@@ -1,39 +1,43 @@
 ﻿using Zapas.Data.Cache;
+using Zapas.Data.DTO.Race.RaceOptions;
 using Zapas.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Zapas.Services.PlaceService
 {
     public class PlaceService : IPlaceService
     {
-        private readonly BaseRepository<Place> _placeRepo;
-        private readonly IApplicationCache<IEnumerable<Place>> _cache;
+        private readonly IApplicationCache<IEnumerable<PlaceSelection>> _cache;
+        private readonly ApplicationDbContext _context;
+
         public PlaceService(
             ApplicationDbContext context,
-            IApplicationCache<IEnumerable<Place>> cache) 
+            IApplicationCache<IEnumerable<PlaceSelection>> cache) 
         {
-            _placeRepo = new BaseRepository<Place>(context);
+            _context = context;
             _cache = cache;
         }
 
-        public Task<IEnumerable<Place>> Get()
+        public async Task<IEnumerable<PlaceSelection>> GetSelection()
         {
-            throw new NotImplementedException();
-        }
+            IEnumerable<PlaceSelection> cachedPlaces = _cache.Get(GetCacheKey());
+            if (cachedPlaces != null)
+            {
+                return cachedPlaces;
+            }
+            else
+            {
+                var places = await _context.Places.AsNoTracking()
+                    .Select(p=>new PlaceSelection()
+                    {
+                        Id = p.Id,
+                        Name = p.Name
+                    }).ToListAsync();
 
-        /*public async Task<IEnumerable<Place>> Get()
-{
-   IEnumerable<Place> cachedPlaces = _cache.Get(GetCacheKey());
-   if (cachedPlaces != null)
-   {
-       return cachedPlaces;
-   }
-   else
-   {
-       var places = await _placeRepo.Get();
-       _cache.Set(places, GetCacheKey());
-       return places;
-   }
-}*/
+                _cache.Set(places, GetCacheKey());
+                return places;
+            }
+        }
 
         private string GetCacheKey()
         {

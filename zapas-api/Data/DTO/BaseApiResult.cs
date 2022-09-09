@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Text.Json.Serialization;
+
 namespace Zapas.Data.DTO
 {
-    public class BaseApiResult<T>
+    public class BaseApiResult<T,D>
     {
-        public IEnumerable<T>? Data { get; set; }
-        public IQueryable? Query { get; set; }
-        public int? PageIndex { get; private set; }
-        public int? PageSize { get; private set; }
+        public IEnumerable<D>? Data { get; set; }
+        [JsonIgnore]
+        public IQueryable<T>? Query { get; set; }
+        [JsonIgnore]
+        public IEnumerable<string>? ExtraFields { get; set; }
+        public int PageIndex { get; private set; }
+        public int PageSize { get; private set; }
         public int TotalPages { get; private set; }
         public int TotalCount { get; private set; }
         public string? SortColumn { get; set; }
@@ -28,15 +33,17 @@ namespace Zapas.Data.DTO
             }
         }
 
+        public BaseApiResult() { }
+
         public BaseApiResult(
+            IEnumerable<D>? data,
             int count,
-            int? pageIndex,
-            int? pageSize,
+            int pageIndex,
+            int pageSize,
             string? sortColumn,
             string? sortOrder)
         {
-            Data = null;
-            Query = null;
+            Data = data;
             TotalCount = count;
             PageIndex = pageIndex;
             PageSize = pageSize;

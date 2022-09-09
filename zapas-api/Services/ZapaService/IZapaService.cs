@@ -1,9 +1,10 @@
-﻿using Zapas.Data.Models;
+﻿using Zapas.Data.DTO.Race.RaceOptions;
+using Zapas.Data.Models;
 
 namespace Zapas.Services.ZapaService
 {
     public interface IZapaService
     {
-        public Task<IEnumerable<Zapa>> GetByUserId(string userId);
+        Task<IEnumerable<ZapaSelection>> GetSelection(string userId);
     }
 }

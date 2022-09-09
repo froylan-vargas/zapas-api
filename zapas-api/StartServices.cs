@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Zapas.Services.Login;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Zapas.Data.DTO.Race.RaceOptions;
 
 namespace Zapas
 {
@@ -57,12 +58,12 @@ namespace Zapas
             builder.Services.AddAutoMapper(typeof(PlaceProfile));
 
             //Cache
-            builder.Services.AddScoped<IApplicationCache<IEnumerable<Zapa>>, ApplicationCache<IEnumerable<Zapa>>>();
-            builder.Services.AddScoped<IApplicationCache<IEnumerable<RaceType>>, ApplicationCache<IEnumerable<RaceType>>>();
-            builder.Services.AddScoped<IApplicationCache<IEnumerable<Place>>, ApplicationCache<IEnumerable<Place>>>();
-
-            //Repository
-            builder.Services.AddScoped<IRaceRepository, RaceRepository>();
+            builder.Services.AddSingleton<IApplicationCache<IEnumerable<ZapaSelection>>,
+                ApplicationCache<IEnumerable<ZapaSelection>>>();
+            builder.Services.AddSingleton<IApplicationCache<IEnumerable<RaceTypeSelection>>,
+                ApplicationCache<IEnumerable<RaceTypeSelection>>>();
+            builder.Services.AddSingleton<IApplicationCache<IEnumerable<PlaceSelection>>,
+                ApplicationCache<IEnumerable<PlaceSelection>>>();
 
             //Services
             builder.Services.AddScoped<IRaceService, RaceService>();

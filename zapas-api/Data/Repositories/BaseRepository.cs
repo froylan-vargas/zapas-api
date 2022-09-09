@@ -1,81 +1,83 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Reflection;
 using Zapas.Data.DTO;
 using Zapas.Data.Repositories;
 using System.Linq.Dynamic.Core;
-using System.Drawing.Printing;
 using System.Linq;
 using Zapas.Data.DTO.Race;
 using Zapas.Data.Models;
+using System.Reflection;
+using Microsoft.Extensions.Options;
+using Zapas.Data.QueryFilters;
+using Zapas.Data.QueryOptions;
+using Zapas.Helpers;
 
 namespace Zapas.Data
 {
-    public class BaseRepository<T> where T : class
+    public class BaseRepository<T,M> where T: class
     {
         private readonly ApplicationDbContext _context;
-        private readonly DbSet<T> _dbSet;
         public BaseRepository(ApplicationDbContext context)
         {
             _context = context;
-            _dbSet = context.Set<T>();
         }
 
-        public async virtual Task<BaseApiResult<T>> Get(
-            BaseQueryOptions queryOptions,
-            IEnumerable<Expression<Func<Race, bool>>> filters)
+        public async virtual Task<BaseApiResult<T,M>>? Get(
+            BaseQueryOptions options,
+            IEnumerable<Expression<Func<T,bool>>> filters,
+            ExtraQueryFields<T>? getExtraFields = null
+            )
         {
-            IQueryable<T> query = _dbSet;
-            var sortColumn = queryOptions.SortColumn;
-            var sortOrder = queryOptions.SortOrder;
-            var pageIndex = queryOptions.PageIndex;
-            var pageSize = queryOptions.PageSize;
+            var sortColumn = options.SortColumn;
+            var sortOrder = options.SortOrder;
+            var pageIndex = options.PageIndex;
+            var pageSize = options.PageSize;
 
-            if (filters != null)
+            IQueryable<T> query = _context.Set<T>().AsNoTracking();
+
+            foreach (var filter in filters)
             {
-                foreach (var filter in filters)
-                {
-                    query = query.Where(filter);
-                }
+                query = query.Where(filter);
             }
 
             var count = await query.CountAsync();
 
-            if(count == 0)
+            if (count == 0)
             {
-                return new BaseApiResult<T>(0, 0, 0, "", "");
+                return new BaseApiResult<T,M>();
             }
 
-            if (!string.IsNullOrEmpty(sortColumn)
-                && IsValidProperty(sortColumn))
+            IEnumerable<string> extraFields = await getExtraFields!(query,count);
+
+            if (!string.IsNullOrEmpty(options.SortColumn)
+            && IsValidProperty(options.SortColumn))
             {
-                sortOrder = !string.IsNullOrEmpty(sortOrder)
-                    && sortOrder.ToUpper() == "ASC"
+                options.SortOrder = !string.IsNullOrEmpty(options.SortOrder)
+                    && options.SortOrder.ToUpper() == "ASC"
                     ? "ASC"
                     : "DESC";
                 query = query.OrderBy(
-                    string.Format(
-                        "{0} {1}",
-                        sortColumn,
-                        sortOrder)
+                string.Format(
+                "{0} {1}",
+                        options.SortColumn,
+                        options.SortOrder)
                     );
             }
 
-            if(pageIndex!= null && pageSize!=null)
-            {
                 query = query
-                    .Skip(pageIndex.Value * pageSize.Value)
-                    .Take(pageSize.Value);
-            }
+                    .Skip(pageIndex * pageSize)
+                    .Take(pageSize);
+            
 
-            var result = new BaseApiResult<T>(count,
+            var result = new BaseApiResult<T,M>(null,count,
                 pageIndex,
                 pageSize,
                 sortColumn,
                 sortOrder);
 
             result.Query = query;
-            //Hay que investigar como pasar de IDynamycQuery a Queryable. 
+            result.ExtraFields = extraFields;
+
             return result;
         }
 
@@ -109,5 +111,5 @@ namespace Zapas.Data
         {
             throw new NotImplementedException();
         }*/
+        }
     }
-}
